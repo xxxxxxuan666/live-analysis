@@ -9,13 +9,13 @@
 也可以自己在 PowerShell 运行：
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$u='https://raw.githubusercontent.com/xxxxxxuan666/livestream-competitor-monitor-skill/main/install.ps1'; $p=Join-Path $env:TEMP 'install-livestream-competitor-monitor-skill.ps1'; Invoke-WebRequest -UseBasicParsing -Uri $u -OutFile $p; powershell -NoProfile -ExecutionPolicy Bypass -File $p"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$u='https://raw.githubusercontent.com/xxxxxxuan666/live-analysis/main/install.ps1'; $p=Join-Path $env:TEMP 'install-livestream-competitor-monitor-skill.ps1'; Invoke-WebRequest -UseBasicParsing -Uri $u -OutFile $p; powershell -NoProfile -ExecutionPolicy Bypass -File $p"
 ```
 
 需要飞书文档发布能力时：
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$u='https://raw.githubusercontent.com/xxxxxxuan666/livestream-competitor-monitor-skill/main/install.ps1'; $p=Join-Path $env:TEMP 'install-livestream-competitor-monitor-skill.ps1'; Invoke-WebRequest -UseBasicParsing -Uri $u -OutFile $p; powershell -NoProfile -ExecutionPolicy Bypass -File $p -InstallLarkCli"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$u='https://raw.githubusercontent.com/xxxxxxuan666/live-analysis/main/install.ps1'; $p=Join-Path $env:TEMP 'install-livestream-competitor-monitor-skill.ps1'; Invoke-WebRequest -UseBasicParsing -Uri $u -OutFile $p; powershell -NoProfile -ExecutionPolicy Bypass -File $p -InstallLarkCli"
 ```
 
 ## 安装内容

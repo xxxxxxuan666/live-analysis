@@ -1,5 +1,5 @@
 param(
-  [string]$RepoZipUrl = "https://github.com/xxxxxxuan666/livestream-competitor-monitor-skill/archive/refs/heads/main.zip",
+  [string]$RepoZipUrl = "https://github.com/xxxxxxuan666/live-analysis/archive/refs/heads/main.zip",
   [string]$InstallRoot = "",
   [switch]$SkipToolInstall,
   [switch]$InstallLarkCli

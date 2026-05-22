@@ -10,11 +10,11 @@
 1. 打开 PowerShell。
 2. 运行下面命令下载安装脚本并执行：
 
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$u='https://raw.githubusercontent.com/xxxxxxuan666/livestream-competitor-monitor-skill/main/install.ps1'; $p=Join-Path $env:TEMP 'install-livestream-competitor-monitor-skill.ps1'; Invoke-WebRequest -UseBasicParsing -Uri $u -OutFile $p; powershell -NoProfile -ExecutionPolicy Bypass -File $p"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$u='https://raw.githubusercontent.com/xxxxxxuan666/live-analysis/main/install.ps1'; $p=Join-Path $env:TEMP 'install-livestream-competitor-monitor-skill.ps1'; Invoke-WebRequest -UseBasicParsing -Uri $u -OutFile $p; powershell -NoProfile -ExecutionPolicy Bypass -File $p"
 
 3. 如果我还需要生成飞书文档，再改用下面命令安装，可额外安装 lark-cli：
 
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$u='https://raw.githubusercontent.com/xxxxxxuan666/livestream-competitor-monitor-skill/main/install.ps1'; $p=Join-Path $env:TEMP 'install-livestream-competitor-monitor-skill.ps1'; Invoke-WebRequest -UseBasicParsing -Uri $u -OutFile $p; powershell -NoProfile -ExecutionPolicy Bypass -File $p -InstallLarkCli"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$u='https://raw.githubusercontent.com/xxxxxxuan666/live-analysis/main/install.ps1'; $p=Join-Path $env:TEMP 'install-livestream-competitor-monitor-skill.ps1'; Invoke-WebRequest -UseBasicParsing -Uri $u -OutFile $p; powershell -NoProfile -ExecutionPolicy Bypass -File $p -InstallLarkCli"
 
 4. 安装完成后，告诉我：
 - skill 安装路径
@@ -32,5 +32,5 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "$u='https://raw.githubus
 ```text
 请只下载并安装 livestream-competitor-monitor-skill，不安装 ffmpeg、Python 包或 lark-cli。
 
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$u='https://raw.githubusercontent.com/xxxxxxuan666/livestream-competitor-monitor-skill/main/install.ps1'; $p=Join-Path $env:TEMP 'install-livestream-competitor-monitor-skill.ps1'; Invoke-WebRequest -UseBasicParsing -Uri $u -OutFile $p; powershell -NoProfile -ExecutionPolicy Bypass -File $p -SkipToolInstall"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$u='https://raw.githubusercontent.com/xxxxxxuan666/live-analysis/main/install.ps1'; $p=Join-Path $env:TEMP 'install-livestream-competitor-monitor-skill.ps1'; Invoke-WebRequest -UseBasicParsing -Uri $u -OutFile $p; powershell -NoProfile -ExecutionPolicy Bypass -File $p -SkipToolInstall"
 ```

@@ -1,15 +1,15 @@
 # 创建 GitHub 仓库
 
-目标仓库名：
+当前使用的仓库名：
 
 ```text
-livestream-competitor-monitor-skill
+live-analysis
 ```
 
-推荐创建地址：
+仓库地址：
 
 ```text
-https://github.com/xxxxxxuan666/livestream-competitor-monitor-skill
+https://github.com/xxxxxxuan666/live-analysis
 ```
 
 ## 方式 A：网页创建
@@ -19,7 +19,7 @@ https://github.com/xxxxxxuan666/livestream-competitor-monitor-skill
 3. Repository name 填：
 
 ```text
-livestream-competitor-monitor-skill
+live-analysis
 ```
 
 4. 选择 Public 或 Private。
@@ -31,7 +31,7 @@ livestream-competitor-monitor-skill
 如果本机已安装并登录 `gh`：
 
 ```powershell
-gh repo create xxxxxxuan666/livestream-competitor-monitor-skill --public --source . --remote origin --push
+gh repo create xxxxxxuan666/live-analysis --public --source . --remote origin --push
 ```
 
 如果希望私有仓库，把 `--public` 改成 `--private`。
