@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.venv/
+.venv-funasr/
+直播录文件存档/
+*.mkv
+*.mp4
+*.wav
+*.jsonl
+*.log
+*.err.log
