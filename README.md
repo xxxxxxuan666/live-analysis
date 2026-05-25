@@ -2,6 +2,8 @@
 
 用于抖音等直播间的竞品直播监控分析：录屏/录音、系统声音采集、评论 JSONL 抓取、FunASR 转写、单直播间分析报告、多直播间对比和飞书文档发布。
 
+详细使用说明见 [USAGE.md](USAGE.md)。
+
 ## 一键安装
 
 把 [AI_INSTALL_PROMPT.md](AI_INSTALL_PROMPT.md) 里的整段文字发给本机 AI 助手，它会帮你克隆仓库、安装 skill 并检查依赖。
