@@ -1,10 +1,9 @@
 param(
-  [string]$RepoZipUrl = "https://github.com/xxxxxxuan666/live-analysis/archive/refs/heads/main.zip",
+  [string]$RepoZipUrl = "",
   [string]$InstallRoot = "",
   [switch]$SkipToolInstall,
   [switch]$InstallLarkCli,
   [switch]$InstallPython,
-  [switch]$InstallSystemAudioCapture,
   [switch]$Verify
 )
 
@@ -170,11 +169,12 @@ function Ensure-Node {
 
 function Install-PythonPackages {
   $python = Ensure-Python
-  Write-Step "Installing Python packages: playwright, funasr, modelscope, soundfile, torch"
+  Write-Step "Installing Python packages: playwright"
   Invoke-Python -Python $python -m pip install -U pip
-  Invoke-Python -Python $python -m pip install -U playwright funasr modelscope huggingface_hub soundfile
-  Invoke-Python -Python $python -m pip install torch torchaudio --index-url https://download.pytorch.org/whl/cpu
+  Invoke-Python -Python $python -m pip install -U playwright
   Invoke-Python -Python $python -m playwright install chromium
+  Write-Step "Preparing FunASR virtual environment"
+  powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot "scripts\setup-funasr.ps1")
 }
 
 function Install-LarkCliIfRequested {
@@ -200,35 +200,6 @@ function Test-DirectShowAudioDevice {
   } finally {
     $ErrorActionPreference = $previousErrorActionPreference
   }
-}
-
-function Install-SystemAudioCaptureIfRequested {
-  if (-not $InstallSystemAudioCapture) {
-    Write-Host "Skipping system-audio capture device install. Use -InstallSystemAudioCapture to install virtual-audio-capturer."
-    return
-  }
-  Ensure-Ffmpeg
-  if (Test-DirectShowAudioDevice) {
-    Write-Host "virtual-audio-capturer found."
-    return
-  }
-
-  Write-Step "Installing virtual-audio-capturer"
-  $api = "https://api.github.com/repos/rdp/screen-capture-recorder-to-video-windows-free/releases/latest"
-  $release = Invoke-RestMethod -Uri $api -Headers @{ "User-Agent" = "livestream-competitor-monitor-installer" }
-  $asset = $release.assets | Where-Object { $_.name -like "*.exe" } | Select-Object -First 1
-  if (-not $asset) {
-    throw "Could not find screen-capture-recorder installer in latest GitHub release."
-  }
-  $installerPath = Join-Path ([System.IO.Path]::GetTempPath()) $asset.name
-  Invoke-WebRequest -UseBasicParsing -Uri $asset.browser_download_url -OutFile $installerPath
-  Start-Process -FilePath $installerPath -ArgumentList "/VERYSILENT", "/NORESTART" -Wait
-  Start-Sleep -Seconds 2
-
-  if (-not (Test-DirectShowAudioDevice)) {
-    throw "virtual-audio-capturer was not found after installation. Reopen PowerShell or reboot, then run ffmpeg device listing again."
-  }
-  Write-Host "virtual-audio-capturer installed."
 }
 
 function Test-LarkCli {
@@ -308,21 +279,7 @@ function Invoke-InstallVerification {
     Write-Host "[SKIP] lark-cli (use -InstallLarkCli to install and verify)"
   }
 
-  if ($InstallSystemAudioCapture) {
-    $audioOk = Test-DirectShowAudioDevice
-    Add-CheckResult -Name "virtual-audio-capturer" -Passed $audioOk
-    if ($audioOk) {
-      $testWav = Join-Path ([System.IO.Path]::GetTempPath()) "virtual-audio-capturer-test.wav"
-      Remove-Item -LiteralPath $testWav -ErrorAction SilentlyContinue
-      $previousErrorActionPreference = $ErrorActionPreference
-      $ErrorActionPreference = "Continue"
-      & ffmpeg -y -f dshow -i audio="virtual-audio-capturer" -t 3 $testWav *> $null
-      $ErrorActionPreference = $previousErrorActionPreference
-      Add-CheckResult -Name "system audio recording test" -Passed (($LASTEXITCODE -eq 0) -and (Test-Path -LiteralPath $testWav))
-    }
-  } else {
-    Write-Host "[SKIP] virtual-audio-capturer (use -InstallSystemAudioCapture to install and verify)"
-  }
+  Write-Host "[INFO] system audio capture device must be configured manually: Stereo Mix, virtual-audio-capturer, VB-CABLE, Voicemeeter, or OBS audio."
 
   if ($failures.Count -gt 0) {
     throw "Verification failed: $($failures -join ', ')"
@@ -349,20 +306,42 @@ function Get-SkillSourceFromExpandedZip {
   throw "Could not locate SKILL.md in downloaded repository."
 }
 
+function Copy-SkillDirectory {
+  param(
+    [string]$Source,
+    [string]$Destination
+  )
+  New-Item -ItemType Directory -Force -Path $Destination | Out-Null
+  $excludedNames = @(".git", "__pycache__", ".venv", ".venv-funasr")
+  foreach ($item in Get-ChildItem -LiteralPath $Source -Force) {
+    if ($excludedNames -contains $item.Name) {
+      continue
+    }
+    if ($item.Name -like "*.zip" -or $item.Name -like "*.pyc") {
+      continue
+    }
+    Copy-Item -LiteralPath $item.FullName -Destination $Destination -Recurse -Force
+  }
+}
+
 if (-not $InstallRoot) {
   $InstallRoot = Join-Path $env:USERPROFILE ".agents\skills"
 }
 
-Write-Step "Downloading livestream-competitor-monitor-skill"
-$tempRoot = Join-Path ([System.IO.Path]::GetTempPath()) ("livestream-skill-" + [guid]::NewGuid().ToString("N"))
-$zipPath = Join-Path $tempRoot "skill.zip"
-$expandPath = Join-Path $tempRoot "expanded"
-New-Item -ItemType Directory -Force -Path $tempRoot, $expandPath | Out-Null
+if ($RepoZipUrl) {
+  Write-Step "Downloading livestream-competitor-monitor-skill"
+  $tempRoot = Join-Path ([System.IO.Path]::GetTempPath()) ("livestream-skill-" + [guid]::NewGuid().ToString("N"))
+  $zipPath = Join-Path $tempRoot "skill.zip"
+  $expandPath = Join-Path $tempRoot "expanded"
+  New-Item -ItemType Directory -Force -Path $tempRoot, $expandPath | Out-Null
 
-Invoke-WebRequest -UseBasicParsing -Uri $RepoZipUrl -OutFile $zipPath
-Expand-Archive -LiteralPath $zipPath -DestinationPath $expandPath -Force
-
-$skillSource = Get-SkillSourceFromExpandedZip -ExpandedRoot $expandPath
+  Invoke-WebRequest -UseBasicParsing -Uri $RepoZipUrl -OutFile $zipPath
+  Expand-Archive -LiteralPath $zipPath -DestinationPath $expandPath -Force
+  $skillSource = Get-SkillSourceFromExpandedZip -ExpandedRoot $expandPath
+} else {
+  Write-Step "Installing livestream-competitor-monitor-skill from local checkout"
+  $skillSource = $PSScriptRoot
+}
 $target = Join-Path $InstallRoot "livestream-competitor-monitor-skill"
 
 Write-Step "Installing skill to $target"
@@ -370,13 +349,12 @@ New-Item -ItemType Directory -Force -Path $InstallRoot | Out-Null
 if (Test-Path -LiteralPath $target) {
   Remove-Item -LiteralPath $target -Recurse -Force
 }
-Copy-Item -LiteralPath $skillSource -Destination $target -Recurse -Force
+Copy-SkillDirectory -Source $skillSource -Destination $target
 
 if (-not $SkipToolInstall) {
   Ensure-Ffmpeg
   Install-PythonPackages
   Install-LarkCliIfRequested
-  Install-SystemAudioCaptureIfRequested
 } else {
   Write-Host "Skipping tool installation because -SkipToolInstall was provided."
 }
@@ -388,8 +366,4 @@ if ($Verify) {
 Write-Step "Installation complete"
 Write-Host "Skill path: $target"
 Write-Host "Restart Codex or your Agent tool so it can reload skills."
-if ($InstallSystemAudioCapture) {
-  Write-Host "System audio capture device: virtual-audio-capturer"
-} else {
-  Write-Host "For recording system audio, configure Stereo Mix, virtual-audio-capturer, VB-CABLE, Voicemeeter, or another system-audio DirectShow device."
-}
+Write-Host "For recording system audio, configure Stereo Mix, virtual-audio-capturer, VB-CABLE, Voicemeeter, or another system-audio DirectShow device."
