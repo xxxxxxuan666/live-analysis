@@ -22,6 +22,8 @@
 
 注意：当前自动录屏/录音脚本主要面向 Windows。Mac 可以用于已有视频、音频、文本和评论文件分析，但直播间链接自动录屏能力需要另行配置 Mac 录屏和系统声音采集方案。
 
+安装验证里如果看到 `editdistance` 跳过，不代表安装失败。`editdistance` 只用于 WER/CER 文本评测指标，不影响 FunASR 转写、直播分析或报告生成。系统声音采集显示“manual setup needed”也是预期状态，因为它依赖用户本机的音频设备或虚拟声卡配置。
+
 ## 快速开始
 
 安装完成后，对 AI 发送直播间链接和模式：
@@ -186,6 +188,14 @@ UI 关键截图默认不生成。如果需要截图证据，可以单独告诉 A
 ### 录不到系统声音
 
 通常是系统声音采集设备没有配置好。请先安装或启用 Stereo Mix、virtual-audio-capturer、VB-CABLE、Voicemeeter 或 OBS audio。不要用麦克风代替系统声音。
+
+### 安装验证里 editdistance 显示跳过
+
+这是可选组件，不影响转写和报告。它只用于 WER/CER 这类文本评测指标。某些较新的 Python 版本没有现成 wheel，会要求 MSVC 编译工具；本 skill 默认不要求用户为这个可选指标安装编译环境。
+
+### 安装验证里系统声音采集显示手动配置
+
+这是预期状态。系统声音采集依赖 Windows 音频设备或虚拟声卡，不能保证在每台电脑上自动安装。只要录屏前配置好 Stereo Mix、VB-CABLE、Voicemeeter、virtual-audio-capturer 或 OBS audio，就可以正常录直播系统声音。
 
 ### 直播间名称识别不完整
 

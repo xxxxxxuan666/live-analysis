@@ -46,6 +46,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "$d=Join-Path $env:TEMP '
 
 不要使用麦克风作为默认采集源。
 
+安装验证中 `editdistance` 跳过不影响转写或报告生成；它只是可选的 WER/CER 文本评测组件。系统声音采集显示需要手动配置也是正常情况。
+
 ## 使用示例
 
 安装并重启 Codex / Agent 后，直接对 AI 说：

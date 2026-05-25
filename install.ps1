@@ -76,7 +76,7 @@ function Test-PythonInvoker {
   )
   try {
     $version = (& $FilePath @PrefixArgs --version 2>&1 | Out-String).Trim()
-    if ($LASTEXITCODE -ne 0 -or $version -notmatch "Python 3\.") {
+    if ($LASTEXITCODE -ne 0 -or $version -notmatch "Python 3\.(10|11|12)\.") {
       return $null
     }
     return [pscustomobject]@{
@@ -145,7 +145,7 @@ function Ensure-Python {
   }
 
   if (-not $InstallPython) {
-    Write-Host "Python 3 was not found. Installing Python 3.11 because Python is required for Playwright and FunASR."
+    Write-Host "Python 3.10-3.12 was not found. Installing Python 3.11 because it has better wheel support for FunASR dependencies."
   }
 
   Invoke-WingetInstall -Id "Python.Python.3.11" -Name "Python 3.11"
@@ -153,7 +153,7 @@ function Ensure-Python {
   Add-UserPathPrefix -Paths @($pythonDir, (Join-Path $pythonDir "Scripts"))
   $python = Get-PythonInvoker
   if (-not $python) {
-    throw "Python was not found after installation. Please reopen PowerShell or install Python 3.11+ manually."
+    throw "Python 3.10-3.12 was not found after installation. Please reopen PowerShell or install Python 3.11 manually."
   }
   Write-Host "python found: $($python.Display) ($($python.Version))"
   return $python
@@ -259,12 +259,22 @@ function Invoke-InstallVerification {
   }
   Add-CheckResult -Name "pip" -Passed $pipOk
 
+  $funasrPython = Join-Path $SkillPath ".venv-funasr\Scripts\python.exe"
   $funasrOk = $false
-  if ($python) {
-    Invoke-Python -Python $python -c "import funasr, torch, modelscope, soundfile; print(torch.__version__)" *> $null
+  if (Test-Path -LiteralPath $funasrPython) {
+    & $funasrPython -c "import funasr, torch, modelscope, soundfile; print(torch.__version__)" *> $null
     $funasrOk = ($LASTEXITCODE -eq 0)
   }
-  Add-CheckResult -Name "FunASR dependencies" -Passed $funasrOk
+  Add-CheckResult -Name "FunASR dependencies" -Passed $funasrOk -Detail $(if (Test-Path -LiteralPath $funasrPython) { "in skill venv" } else { "venv not found" })
+
+  if ($funasrOk) {
+    & $funasrPython -c "import editdistance" *> $null
+    if ($LASTEXITCODE -eq 0) {
+      Write-Host "[PASS] optional editdistance installed"
+    } else {
+      Write-Host "[OPTIONAL] editdistance not installed. This only affects WER/CER evaluation metrics, not livestream transcription or reports."
+    }
+  }
 
   $chromiumOk = $false
   if ($python) {
