@@ -1,6 +1,6 @@
 ---
 name: livestream-competitor-monitor-skill
-version: "0.1.2"
+version: "0.1.3"
 description: Use when Codex needs to monitor authorized competitor livestreams, especially Douyin live rooms, from live room URLs, real-time speech-to-text, screen recordings, screenshots, transcripts, comment exports, or notes; analyze anchor scripts, comment signals, visuals, offers, objections, pacing, conversion tactics, competitor script libraries, multi-room comparisons, and recurring learnings.
 ---
 
