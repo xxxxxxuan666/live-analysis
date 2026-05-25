@@ -17,10 +17,11 @@
 ## 使用前准备
 
 1. 安装 skill 后重启 Codex / Agent 工具，让新 skill 生效。
-2. 确认 Windows 上可用 `ffmpeg`。
-3. 确认 Python、Playwright Chromium、FunASR 依赖已安装。
-4. 录直播系统声音前，需要配置系统声音采集设备，例如 Stereo Mix、virtual-audio-capturer、VB-CABLE、Voicemeeter 或 OBS audio。
-5. 如需发布飞书文档，需要安装并登录 `lark-cli`。
+2. 确认 Windows 上已安装 Google Chrome。输入抖音直播链接后必须用 Chrome 打开直播间，因为评论爬虫依赖 Chrome CDP 连接直播页。
+3. 确认 Windows 上可用 `ffmpeg`。
+4. 确认 Python、Playwright Chromium、FunASR 依赖已安装。
+5. 录直播系统声音前，需要配置系统声音采集设备，例如 Stereo Mix、virtual-audio-capturer、VB-CABLE、Voicemeeter 或 OBS audio。
+6. 如需发布飞书文档，需要安装并登录 `lark-cli`。
 
 一键安装失败时，按 [MANUAL_INSTALL.md](MANUAL_INSTALL.md) 逐项手动安装。
 
@@ -35,6 +36,8 @@
 ```text
 https://live.douyin.com/直播间ID?anchor_id= 录屏
 ```
+
+AI 会通过脚本把直播间打开在 Google Chrome 里；不要改用 Edge、系统默认浏览器或手动重复开多个直播间页面，否则评论 JSONL 可能抓不到或页面会重复。
 
 只录系统声音时发送：
 
@@ -77,6 +80,7 @@ https://live.douyin.com/直播间ID?anchor_id= 录屏
 ```
 
 录制开始后，AI 会返回直播间名称、游戏产品名、归档目录、录屏文件路径、评论文件路径和进程状态。
+录制时直播间页面必须在 Google Chrome 中保持打开，评论爬虫会连接同一个 Chrome 页面并尽量复用已有直播页。
 
 ## 录音模式
 
@@ -212,6 +216,8 @@ UI 关键截图默认不生成。如果需要截图证据，可以单独告诉 A
 ### 评论区没有数据
 
 可能原因包括页面未登录、评论区没有新评论、直播页面结构变化、浏览器自动化被拦截。评论抓取失败不会影响录屏，报告会优先使用转写和画面内容。
+
+请确认直播间是由脚本打开在 Google Chrome 中，而不是 Edge 或系统默认浏览器。评论爬虫依赖 Chrome CDP，因此默认浏览器里的直播页不会被采集。
 
 ### 生成飞书文档失败
 

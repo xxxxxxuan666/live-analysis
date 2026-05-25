@@ -6,6 +6,7 @@
 
 ```powershell
 git --version
+chrome --version
 ffmpeg -version
 python --version
 node --version
@@ -49,7 +50,27 @@ Write-Host "Skill installed to: $target"
 
 安装后需要重启 Codex / Claude Code / Cursor Agent 等工具。
 
-## 3. ffmpeg
+## 3. Google Chrome
+
+用于打开抖音直播间。评论爬虫依赖 Chrome CDP，因此直播链接必须由 Google Chrome 打开，不能只开在 Edge 或系统默认浏览器里。
+
+```powershell
+winget install --id Google.Chrome --accept-package-agreements --accept-source-agreements
+```
+
+安装后关闭并重新打开 PowerShell，再检查：
+
+```powershell
+chrome --version
+```
+
+如果 `chrome` 命令不可用，但下面文件存在，也可以正常使用：
+
+```powershell
+Test-Path "C:\Program Files\Google\Chrome\Application\chrome.exe"
+```
+
+## 4. ffmpeg
 
 用于录屏、录音、抽音频和抽帧。
 
@@ -63,7 +84,7 @@ winget install --id Gyan.FFmpeg --accept-package-agreements --accept-source-agre
 ffmpeg -version
 ```
 
-## 4. Python 3.11
+## 5. Python 3.11
 
 用于 Playwright、评论抓取和 FunASR 转写。建议安装 Python 3.11，避免较新 Python 版本缺少部分依赖 wheel。
 
@@ -80,7 +101,7 @@ python --version
 
 如果 `python` 仍不可用，可以临时使用 `py -3.11` 执行下面的 Python 命令。
 
-## 5. Playwright + Chromium
+## 6. Playwright + Chromium
 
 用于识别直播间信息和抓取评论区内容。
 
@@ -96,7 +117,7 @@ py -3.11 -m playwright install chromium
 py -3.11 -c "from playwright.sync_api import sync_playwright; p=sync_playwright().start(); b=p.chromium.launch(headless=True); print(b.version); b.close(); p.stop()"
 ```
 
-## 6. FunASR 转写环境
+## 7. FunASR 转写环境
 
 用于把直播系统声音转成文本。推荐安装在 skill 自己的虚拟环境中。
 
@@ -131,7 +152,7 @@ $python = Join-Path $skill ".venv-funasr\Scripts\python.exe"
 
 如果它提示缺少 MSVC 或编译失败，可以跳过。
 
-## 7. lark-cli
+## 8. lark-cli
 
 用于生成飞书文档。只有需要发布飞书报告时才安装。
 
@@ -152,7 +173,7 @@ lark-cli --version
 lark-cli.cmd --version
 ```
 
-## 8. 系统声音采集设备
+## 9. 系统声音采集设备
 
 录直播系统声音必须有一个系统声音采集设备。这个步骤通常涉及驱动、虚拟声卡或系统音频路由，不能保证所有电脑都能静默安装成功。
 
@@ -223,6 +244,7 @@ ffmpeg -hide_banner -list_devices true -f dshow -i dummy
 只要下面项目是 OK，就可以开始使用核心能力：
 
 - Skill 文件已安装
+- Google Chrome 可用
 - ffmpeg 可用
 - Python 3.11 可用
 - Playwright Chromium 可用

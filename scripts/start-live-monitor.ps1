@@ -53,6 +53,46 @@ function Resolve-PythonPath {
   return ""
 }
 
+function Resolve-ChromePath {
+  $candidates = @(
+    "C:\Program Files\Google\Chrome\Application\chrome.exe",
+    "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
+  )
+  foreach ($candidate in $candidates) {
+    if (Test-Path -LiteralPath $candidate) {
+      return (Get-Item -LiteralPath $candidate).FullName
+    }
+  }
+  $cmd = Get-Command chrome.exe -ErrorAction SilentlyContinue
+  if ($cmd) {
+    return $cmd.Source
+  }
+  throw "Chrome was not found. Install Google Chrome because the Douyin comment crawler depends on Chrome CDP."
+}
+
+function Start-LiveUrlInChrome {
+  param([string]$LiveUrl)
+  if (-not $LiveUrl) {
+    return
+  }
+  $chromePath = Resolve-ChromePath
+  $profileDir = Join-Path $env:USERPROFILE ".dy-crawler\profile"
+  New-Item -ItemType Directory -Force -Path $profileDir | Out-Null
+  $chromeArgs = @(
+    "--remote-debugging-port=9222",
+    "--user-data-dir=`"$profileDir`"",
+    "--disable-blink-features=AutomationControlled",
+    "--no-first-run",
+    "--no-default-browser-check",
+    "--disable-sync",
+    "--lang=zh-CN",
+    "--start-maximized",
+    "`"$LiveUrl`""
+  )
+  Start-Process -FilePath $chromePath -ArgumentList $chromeArgs | Out-Null
+  Start-Sleep -Seconds 3
+}
+
 function Resolve-CommentCrawlerPath {
   param([string]$RequestedPath)
   if ($RequestedPath) {
@@ -258,8 +298,7 @@ if ($sessionDir) {
 }
 
 if ($Url -and $DisableComments) {
-  Start-Process $Url
-  Start-Sleep -Seconds 3
+  Start-LiveUrlInChrome -LiveUrl $Url
 }
 
 $stamp = Get-Date -Format "yyyyMMdd-HHmmss"
@@ -271,6 +310,7 @@ $commentsPath = ""
 $commentsLog = ""
 $commentsErrorLog = ""
 $commentsStatus = "disabled"
+$browserOpenMethod = ""
 if ($Url -and -not $DisableComments) {
   $commentBaseName = "$safeRoomName-$stamp"
   $commentsPath = Join-Path $roomDir "$commentBaseName-comments.jsonl"
@@ -288,6 +328,7 @@ if ($Url -and -not $DisableComments) {
       )
       $commentsProcess = Start-Process -FilePath $pythonPath -ArgumentList $commentArgs -WindowStyle Hidden -PassThru -RedirectStandardOutput $commentsLog -RedirectStandardError $commentsErrorLog
       $commentsStatus = "started"
+      $browserOpenMethod = "chrome_cdp_comment_crawler"
     } catch {
       $commentsStatus = "failed: $($_.Exception.Message)"
       Write-Warning "Comment crawler did not start: $($_.Exception.Message)"
@@ -300,6 +341,12 @@ if ($Url -and -not $DisableComments) {
     }
     Write-Warning "Comment crawler did not start: $commentsStatus"
   }
+} elseif ($Url -and $DisableComments) {
+  $browserOpenMethod = "chrome_cdp_direct"
+}
+if ($Url -and -not $DisableComments -and $commentsStatus -ne "started") {
+  Start-LiveUrlInChrome -LiveUrl $Url
+  $browserOpenMethod = "chrome_cdp_direct_after_comment_failure"
 }
 
 if ($Mode -eq "video") {
@@ -364,6 +411,7 @@ $session = [ordered]@{
   comments_log = $commentsLog
   comments_error_log = $commentsErrorLog
   comments_status = $commentsStatus
+  browser_open_method = $browserOpenMethod
   session_file = $SessionFile
   pointer_session_file = $pointerSessionFile
   started_at = (Get-Date).ToString("s")

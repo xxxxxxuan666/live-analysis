@@ -58,6 +58,36 @@ function Invoke-WingetInstall {
   Refresh-Path
 }
 
+function Resolve-ChromePath {
+  $candidates = @(
+    "C:\Program Files\Google\Chrome\Application\chrome.exe",
+    "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
+  )
+  foreach ($candidate in $candidates) {
+    if (Test-Path -LiteralPath $candidate) {
+      return (Get-Item -LiteralPath $candidate).FullName
+    }
+  }
+  $cmd = Get-Command chrome.exe -ErrorAction SilentlyContinue
+  if ($cmd) {
+    return $cmd.Source
+  }
+  return ""
+}
+
+function Ensure-Chrome {
+  $chromePath = Resolve-ChromePath
+  if ($chromePath) {
+    Write-Host "Google Chrome found: $chromePath"
+    return
+  }
+  Invoke-WingetInstall -Id "Google.Chrome" -Name "Google Chrome"
+  $chromePath = Resolve-ChromePath
+  if (-not $chromePath) {
+    Write-Warning "Google Chrome is still not available. Please install Google Chrome manually because Douyin comment crawling requires Chrome CDP."
+  }
+}
+
 function Ensure-Ffmpeg {
   if (Test-Command "ffmpeg") {
     Write-Host "ffmpeg found: $((Get-Command ffmpeg).Source)"
@@ -239,6 +269,8 @@ function Invoke-InstallVerification {
   $script:verificationFailures = $failures
 
   Add-CheckResult -Name "skill path" -Passed (Test-Path -LiteralPath $SkillPath) -Detail $SkillPath
+  $chromePath = Resolve-ChromePath
+  Add-CheckResult -Name "Google Chrome" -Passed ([bool]$chromePath) -Detail $chromePath
 
   $ffmpegOk = $false
   if (Test-Command "ffmpeg") {
@@ -363,6 +395,7 @@ if (Test-Path -LiteralPath $target) {
 Copy-SkillDirectory -Source $skillSource -Destination $target
 
 if (-not $SkipToolInstall) {
+  Ensure-Chrome
   Ensure-Ffmpeg
   Install-PythonPackages -SkillPath $target
   Install-LarkCliIfRequested

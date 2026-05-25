@@ -5,6 +5,7 @@ $ErrorActionPreference = "Stop"
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $startScript = Join-Path $scriptDir "start-live-monitor.ps1"
 $stopScript = Join-Path $scriptDir "stop-live-monitor.ps1"
+$legacyStartScript = Join-Path $scriptDir "start-douyin-recording.ps1"
 $metadataScript = Join-Path $scriptDir "resolve-douyin-live-metadata.py"
 $uiEvidenceScript = Join-Path $scriptDir "export-ui-evidence.ps1"
 $manualUiEvidenceScript = Join-Path $scriptDir "new-ui-evidence-manifest.ps1"
@@ -12,6 +13,7 @@ $commentSummaryScript = Join-Path $scriptDir "summarize-comments.ps1"
 $feishuPublishScript = Join-Path $scriptDir "publish-feishu-report.ps1"
 $skillDir = Split-Path -Parent $scriptDir
 $repoRoot = Split-Path -Parent $skillDir
+$installScript = Join-Path $skillDir "install.ps1"
 $commentCrawlerScript = Join-Path $scriptDir "douyin-comment-crawler.py"
 $skillFile = Join-Path $skillDir "SKILL.md"
 $caseTemplate = Join-Path $skillDir "assets\douyin-case-analysis-template.md"
@@ -37,16 +39,18 @@ function Assert-Contains {
 
 Assert-True (Test-Path -LiteralPath $startScript) "Missing start-live-monitor.ps1"
 Assert-True (Test-Path -LiteralPath $stopScript) "Missing stop-live-monitor.ps1"
+Assert-True (Test-Path -LiteralPath $legacyStartScript) "Missing start-douyin-recording.ps1"
 Assert-True (Test-Path -LiteralPath $metadataScript) "Missing resolve-douyin-live-metadata.py"
 Assert-True (Test-Path -LiteralPath $uiEvidenceScript) "Missing export-ui-evidence.ps1"
 Assert-True (Test-Path -LiteralPath $manualUiEvidenceScript) "Missing new-ui-evidence-manifest.ps1"
 Assert-True (Test-Path -LiteralPath $commentSummaryScript) "Missing summarize-comments.ps1"
 Assert-True (Test-Path -LiteralPath $feishuPublishScript) "Missing publish-feishu-report.ps1"
+Assert-True (Test-Path -LiteralPath $installScript) "Missing install.ps1"
 Assert-True (Test-Path -LiteralPath $commentCrawlerScript) "Missing douyin-live-comments crawler.py"
 Assert-True (Test-Path -LiteralPath $skillFile) "Missing SKILL.md"
 Assert-True (Test-Path -LiteralPath $caseTemplate) "Missing douyin-case-analysis-template.md"
 
-foreach ($scriptToParse in @($startScript, $stopScript, $uiEvidenceScript, $manualUiEvidenceScript, $commentSummaryScript, $feishuPublishScript)) {
+foreach ($scriptToParse in @($startScript, $stopScript, $legacyStartScript, $uiEvidenceScript, $manualUiEvidenceScript, $commentSummaryScript, $feishuPublishScript, $installScript)) {
   $parseErrors = $null
   [System.Management.Automation.Language.Parser]::ParseFile($scriptToParse, [ref]$null, [ref]$parseErrors) | Out-Null
   Assert-True (($parseErrors | Measure-Object).Count -eq 0) "$([System.IO.Path]::GetFileName($scriptToParse)) has parser errors"
@@ -54,11 +58,13 @@ foreach ($scriptToParse in @($startScript, $stopScript, $uiEvidenceScript, $manu
 
 $startText = Get-Content -Raw -Encoding utf8 -LiteralPath $startScript
 $stopText = Get-Content -Raw -Encoding utf8 -LiteralPath $stopScript
+$legacyStartText = Get-Content -Raw -Encoding utf8 -LiteralPath $legacyStartScript
 $metadataText = Get-Content -Raw -Encoding utf8 -LiteralPath $metadataScript
 $uiEvidenceText = Get-Content -Raw -Encoding utf8 -LiteralPath $uiEvidenceScript
 $manualUiEvidenceText = Get-Content -Raw -Encoding utf8 -LiteralPath $manualUiEvidenceScript
 $commentSummaryText = Get-Content -Raw -Encoding utf8 -LiteralPath $commentSummaryScript
 $feishuPublishText = Get-Content -Raw -Encoding utf8 -LiteralPath $feishuPublishScript
+$installText = Get-Content -Raw -Encoding utf8 -LiteralPath $installScript
 $commentCrawlerText = Get-Content -Raw -Encoding utf8 -LiteralPath $commentCrawlerScript
 $skillText = Get-Content -Raw -Encoding utf8 -LiteralPath $skillFile
 $templateText = Get-Content -Raw -Encoding utf8 -LiteralPath $caseTemplate
@@ -91,8 +97,13 @@ Assert-Contains $startText "comments_path" "start-live-monitor.ps1 must persist 
 Assert-True ($startText -notmatch '\[Parameter\(Mandatory=\$true\)\]\s*\r?\n\s*\[string\]\$RoomName') "start-live-monitor.ps1 must allow RoomName to be auto-detected"
 Assert-Contains $startText "Resolve-LiveMetadata" "start-live-monitor.ps1 must resolve metadata before naming archive folders"
 Assert-Contains $startText "resolve-douyin-live-metadata.py" "start-live-monitor.ps1 must call the Douyin metadata resolver"
-Assert-True ($startText -notmatch 'if\s*\(\$Url\)\s*\{\s*Start-Process\s+\$Url') "start-live-monitor.ps1 must not directly open an extra live-room page when the comment crawler owns the browser page"
+Assert-True ($startText -notmatch 'Start-Process\s+\$Url') "start-live-monitor.ps1 must never open live-room URLs through the default browser"
+Assert-Contains $startText "Resolve-ChromePath" "start-live-monitor.ps1 must resolve Chrome before opening a live-room URL"
+Assert-Contains $startText "Start-LiveUrlInChrome" "start-live-monitor.ps1 must open live-room URLs in Chrome when it owns the browser page"
 Assert-Contains $startText '$Url -and $DisableComments' "start-live-monitor.ps1 may only open the live-room URL itself when comments are disabled"
+Assert-True ($legacyStartText -notmatch 'Start-Process\s+\$Url') "start-douyin-recording.ps1 must never open live-room URLs through the default browser"
+Assert-Contains $legacyStartText "Resolve-ChromePath" "start-douyin-recording.ps1 must resolve Chrome before opening a live-room URL"
+Assert-Contains $legacyStartText "Start-LiveUrlInChrome" "start-douyin-recording.ps1 must open Douyin live-room URLs in Chrome"
 Assert-Contains $commentCrawlerText "find_reusable_live_page" "crawler.py must reuse an existing live-room page when possible"
 Assert-Contains $commentCrawlerText "close_duplicate_live_pages" "crawler.py must close duplicate live-room pages"
 Assert-Contains $commentCrawlerText "bring_to_front" "crawler.py must bring the reused or created live-room page to the front for recording"
@@ -139,6 +150,11 @@ Assert-Contains $skillText "export-ui-evidence.ps1" "SKILL.md must mention the U
 Assert-Contains $skillText "summarize-comments.ps1" "SKILL.md must mention the comment summary script"
 Assert-Contains $skillText "publish-feishu-report.ps1" "SKILL.md must mention the Feishu publish helper"
 Assert-Contains $skillText "resolve-douyin-live-metadata.py" "SKILL.md must mention the metadata resolver"
+Assert-Contains $skillText "must be opened in Chrome" "SKILL.md must require Douyin live URLs to open in Chrome"
+Assert-Contains $skillText "comment crawler depends on Chrome CDP" "SKILL.md must explain the Chrome/CDP dependency for comments"
+Assert-Contains $installText "Ensure-Chrome" "install.ps1 must install Google Chrome for Douyin comment crawling"
+Assert-Contains $installText "Google.Chrome" "install.ps1 must use winget's Google Chrome package id"
+Assert-Contains $installText "Resolve-ChromePath" "install.ps1 must verify Google Chrome availability"
 
 Write-Host "live monitor script checks passed"
 

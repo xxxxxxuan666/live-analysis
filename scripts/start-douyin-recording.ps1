@@ -6,6 +6,46 @@ param(
   [int]$FrameRate = 15
 )
 
+function Resolve-ChromePath {
+  $candidates = @(
+    "C:\Program Files\Google\Chrome\Application\chrome.exe",
+    "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
+  )
+  foreach ($candidate in $candidates) {
+    if (Test-Path -LiteralPath $candidate) {
+      return (Get-Item -LiteralPath $candidate).FullName
+    }
+  }
+  $cmd = Get-Command chrome.exe -ErrorAction SilentlyContinue
+  if ($cmd) {
+    return $cmd.Source
+  }
+  throw "Chrome was not found. Install Google Chrome because the Douyin comment crawler depends on Chrome CDP."
+}
+
+function Start-LiveUrlInChrome {
+  param([string]$LiveUrl)
+  if (-not $LiveUrl) {
+    return
+  }
+  $chromePath = Resolve-ChromePath
+  $profileDir = Join-Path $env:USERPROFILE ".dy-crawler\profile"
+  New-Item -ItemType Directory -Force -Path $profileDir | Out-Null
+  $chromeArgs = @(
+    "--remote-debugging-port=9222",
+    "--user-data-dir=`"$profileDir`"",
+    "--disable-blink-features=AutomationControlled",
+    "--no-first-run",
+    "--no-default-browser-check",
+    "--disable-sync",
+    "--lang=zh-CN",
+    "--start-maximized",
+    "`"$LiveUrl`""
+  )
+  Start-Process -FilePath $chromePath -ArgumentList $chromeArgs | Out-Null
+  Start-Sleep -Seconds 3
+}
+
 $preferredFfmpeg = Join-Path $env:USERPROFILE "Tools\ffmpeg\bin\ffmpeg.exe"
 if (Test-Path -LiteralPath $preferredFfmpeg) {
   $ffmpegPath = (Get-Item -LiteralPath $preferredFfmpeg).FullName
@@ -29,8 +69,7 @@ if (-not (Test-Path -LiteralPath $OutputDir)) {
 $OutputDir = (Resolve-Path -LiteralPath $OutputDir).Path
 
 if ($Url) {
-  Start-Process $Url
-  Start-Sleep -Seconds 3
+  Start-LiveUrlInChrome -LiveUrl $Url
 }
 
 if (-not $AudioDevice) {
@@ -83,6 +122,7 @@ $session = [ordered]@{
   output_planned = $output
   log = $log
   audio_device = $AudioDevice
+  browser_open_method = if ($Url) { "chrome_cdp_direct" } else { "" }
   started_at = (Get-Date).ToString("s")
   note = "Say pause, then run stop-douyin-recording.ps1 to stop this ffmpeg recording."
 }
