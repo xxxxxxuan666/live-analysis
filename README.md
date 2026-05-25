@@ -4,13 +4,9 @@
 
 ## 一键安装
 
-把 [AI_INSTALL_PROMPT.md](AI_INSTALL_PROMPT.md) 里的整段文字发给本机 AI 助手，它会帮你下载安装并检查依赖。
+把下面内容发给本机 AI 助手，它会帮你下载安装并检查依赖。
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$u='https://raw.githubusercontent.com/xxxxxxuan666/live-analysis/main/install.ps1'; $p=Join-Path $env:TEMP 'install-livestream-competitor-monitor-skill.ps1'; Invoke-WebRequest -UseBasicParsing -Uri $u -OutFile $p; powershell -NoProfile -ExecutionPolicy Bypass -File $p -InstallLarkCli -InstallPython -InstallSystemAudioCapture -Verify"
 
-也可以自己在 PowerShell 运行：
-
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$u='https://raw.githubusercontent.com/xxxxxxuan666/live-analysis/main/install.ps1'; $p=Join-Path $env:TEMP 'install-livestream-competitor-monitor-skill.ps1'; Invoke-WebRequest -UseBasicParsing -Uri $u -OutFile $p; powershell -NoProfile -ExecutionPolicy Bypass -File $p"
-```
 
 需要飞书文档发布能力时：
 
