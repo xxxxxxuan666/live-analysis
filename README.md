@@ -5,6 +5,7 @@
 ## 一键安装
 
 把下面内容发给本机 AI 助手，它会帮你下载安装并检查依赖。
+
 powershell -NoProfile -ExecutionPolicy Bypass -Command "$u='https://raw.githubusercontent.com/xxxxxxuan666/live-analysis/main/install.ps1'; $p=Join-Path $env:TEMP 'install-livestream-competitor-monitor-skill.ps1'; Invoke-WebRequest -UseBasicParsing -Uri $u -OutFile $p; powershell -NoProfile -ExecutionPolicy Bypass -File $p -InstallLarkCli -InstallPython -InstallSystemAudioCapture -Verify"
 
 
