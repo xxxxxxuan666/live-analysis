@@ -1,5 +1,7 @@
 # 直播创意分析 Skill 使用说明
 
+官方飞书版使用说明：https://lilithgames.feishu.cn/wiki/KQnPwV0RZiU78YklrMYcMtkanRc
+
 `livestream-competitor-monitor-skill` 用于把直播间链接、录屏文件、录音文件、转写文本和评论 JSONL 变成结构化的竞品直播分析报告。典型用途是观察抖音直播间的主播话术、直播间贴面、游戏画面、评论互动、福利转化路径，并沉淀可复用的直播创意与话术模板。
 
 ## 适用场景

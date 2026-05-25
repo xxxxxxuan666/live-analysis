@@ -1,6 +1,6 @@
 ---
 name: livestream-competitor-monitor-skill
-version: "0.1.1"
+version: "0.1.2"
 description: Use when Codex needs to monitor authorized competitor livestreams, especially Douyin live rooms, from live room URLs, real-time speech-to-text, screen recordings, screenshots, transcripts, comment exports, or notes; analyze anchor scripts, comment signals, visuals, offers, objections, pacing, conversion tactics, competitor script libraries, multi-room comparisons, and recurring learnings.
 ---
 
@@ -9,6 +9,8 @@ description: Use when Codex needs to monitor authorized competitor livestreams, 
 ## Overview
 
 Use this skill to turn Douyin or other livestream artifacts into a structured competitive monitoring report. Work from user-provided or authorized materials such as real-time speech-to-text logs, recordings, screenshots, transcript files, comment exports, manual notes, OCR output, or ASR text.
+
+Official usage guide: https://lilithgames.feishu.cn/wiki/KQnPwV0RZiU78YklrMYcMtkanRc
 
 The preferred Douyin workflow is:
 

@@ -2,7 +2,7 @@
 
 `livestream-competitor-monitor-skill` 用于抖音等直播间的竞品直播创意分析。它可以录屏/录音、抓取评论区 JSONL、用 FunASR 转写直播系统声音，并生成单直播间分析报告、多直播间对比报告和飞书文档。
 
-详细使用说明见 [USAGE.md](USAGE.md)。如果一键安装失败，可按 [MANUAL_INSTALL.md](MANUAL_INSTALL.md) 逐项手动安装依赖。
+官方使用说明见 [飞书文档](https://lilithgames.feishu.cn/wiki/KQnPwV0RZiU78YklrMYcMtkanRc)，本仓库内说明见 [USAGE.md](USAGE.md)。如果一键安装失败，可按 [MANUAL_INSTALL.md](MANUAL_INSTALL.md) 逐项手动安装依赖。
 
 ## 核心能力
 
