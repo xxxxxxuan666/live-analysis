@@ -19,19 +19,19 @@
 把下面整段命令复制到 PowerShell 运行：
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$d=Join-Path $env:TEMP 'live-analysis'; if (Test-Path -LiteralPath $d) { Remove-Item -LiteralPath $d -Recurse -Force }; git clone https://github.com/xxxxxxuan666/live-analysis.git $d; powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $d 'install.ps1')"
+powershell -NoProfile -ExecutionPolicy Bypass -Command '$d=Join-Path $env:TEMP "live-analysis"; if (Test-Path -LiteralPath $d) { Remove-Item -LiteralPath $d -Recurse -Force }; git clone https://github.com/xxxxxxuan666/live-analysis.git $d; powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $d "install.ps1")'
 ```
 
 如果还需要生成飞书文档，使用这个版本：
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$d=Join-Path $env:TEMP 'live-analysis'; if (Test-Path -LiteralPath $d) { Remove-Item -LiteralPath $d -Recurse -Force }; git clone https://github.com/xxxxxxuan666/live-analysis.git $d; powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $d 'install.ps1') -InstallLarkCli"
+powershell -NoProfile -ExecutionPolicy Bypass -Command '$d=Join-Path $env:TEMP "live-analysis"; if (Test-Path -LiteralPath $d) { Remove-Item -LiteralPath $d -Recurse -Force }; git clone https://github.com/xxxxxxuan666/live-analysis.git $d; powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $d "install.ps1") -InstallLarkCli'
 ```
 
 如果希望安装后立刻做验证：
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$d=Join-Path $env:TEMP 'live-analysis'; if (Test-Path -LiteralPath $d) { Remove-Item -LiteralPath $d -Recurse -Force }; git clone https://github.com/xxxxxxuan666/live-analysis.git $d; powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $d 'install.ps1') -InstallLarkCli -Verify"
+powershell -NoProfile -ExecutionPolicy Bypass -Command '$d=Join-Path $env:TEMP "live-analysis"; if (Test-Path -LiteralPath $d) { Remove-Item -LiteralPath $d -Recurse -Force }; git clone https://github.com/xxxxxxuan666/live-analysis.git $d; powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $d "install.ps1") -InstallLarkCli -Verify'
 ```
 
 安装完成后，重启 Codex / Claude Code / Cursor Agent 等工具。

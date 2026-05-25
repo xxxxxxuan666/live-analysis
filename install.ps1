@@ -168,13 +168,14 @@ function Ensure-Node {
 }
 
 function Install-PythonPackages {
+  param([string]$SkillPath)
   $python = Ensure-Python
   Write-Step "Installing Python packages: playwright"
   Invoke-Python -Python $python -m pip install -U pip
   Invoke-Python -Python $python -m pip install -U playwright
   Invoke-Python -Python $python -m playwright install chromium
   Write-Step "Preparing FunASR virtual environment"
-  powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot "scripts\setup-funasr.ps1")
+  powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot "scripts\setup-funasr.ps1") -EnvDir (Join-Path $SkillPath ".venv-funasr")
 }
 
 function Install-LarkCliIfRequested {
@@ -363,7 +364,7 @@ Copy-SkillDirectory -Source $skillSource -Destination $target
 
 if (-not $SkipToolInstall) {
   Ensure-Ffmpeg
-  Install-PythonPackages
+  Install-PythonPackages -SkillPath $target
   Install-LarkCliIfRequested
 } else {
   Write-Host "Skipping tool installation because -SkipToolInstall was provided."

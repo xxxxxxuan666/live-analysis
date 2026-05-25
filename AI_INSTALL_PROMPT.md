@@ -10,11 +10,11 @@
 1. 打开 PowerShell。
 2. 运行下面命令克隆仓库并执行本地安装脚本：
 
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$d=Join-Path $env:TEMP 'live-analysis'; if (Test-Path -LiteralPath $d) { Remove-Item -LiteralPath $d -Recurse -Force }; git clone https://github.com/xxxxxxuan666/live-analysis.git $d; powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $d 'install.ps1')"
+powershell -NoProfile -ExecutionPolicy Bypass -Command '$d=Join-Path $env:TEMP "live-analysis"; if (Test-Path -LiteralPath $d) { Remove-Item -LiteralPath $d -Recurse -Force }; git clone https://github.com/xxxxxxuan666/live-analysis.git $d; powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $d "install.ps1")'
 
 3. 如果我还需要生成飞书文档，再改用下面命令安装，可额外安装 lark-cli：
 
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$d=Join-Path $env:TEMP 'live-analysis'; if (Test-Path -LiteralPath $d) { Remove-Item -LiteralPath $d -Recurse -Force }; git clone https://github.com/xxxxxxuan666/live-analysis.git $d; powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $d 'install.ps1') -InstallLarkCli"
+powershell -NoProfile -ExecutionPolicy Bypass -Command '$d=Join-Path $env:TEMP "live-analysis"; if (Test-Path -LiteralPath $d) { Remove-Item -LiteralPath $d -Recurse -Force }; git clone https://github.com/xxxxxxuan666/live-analysis.git $d; powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $d "install.ps1") -InstallLarkCli'
 
 4. 安装完成后，告诉我：
 - skill 安装路径
@@ -32,5 +32,5 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "$d=Join-Path $env:TEMP '
 ```text
 请只下载并安装 livestream-competitor-monitor-skill，不安装 ffmpeg、Python 包或 lark-cli。
 
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$d=Join-Path $env:TEMP 'live-analysis'; if (Test-Path -LiteralPath $d) { Remove-Item -LiteralPath $d -Recurse -Force }; git clone https://github.com/xxxxxxuan666/live-analysis.git $d; powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $d 'install.ps1') -SkipToolInstall"
+powershell -NoProfile -ExecutionPolicy Bypass -Command '$d=Join-Path $env:TEMP "live-analysis"; if (Test-Path -LiteralPath $d) { Remove-Item -LiteralPath $d -Recurse -Force }; git clone https://github.com/xxxxxxuan666/live-analysis.git $d; powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $d "install.ps1") -SkipToolInstall'
 ```
