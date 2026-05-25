@@ -2,7 +2,7 @@
 
 用于抖音等直播间的竞品直播监控分析：录屏/录音、系统声音采集、评论 JSONL 抓取、FunASR 转写、单直播间分析报告、多直播间对比和飞书文档发布。
 
-详细使用说明见 [USAGE.md](USAGE.md)。
+详细使用说明见 [USAGE.md](USAGE.md)。一键安装失败时，可按 [MANUAL_INSTALL.md](MANUAL_INSTALL.md) 逐项手动安装依赖。
 
 ## 一键安装
 

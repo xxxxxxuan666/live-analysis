@@ -20,6 +20,8 @@
 4. 录直播系统声音前，需要配置系统声音采集设备，例如 Stereo Mix、virtual-audio-capturer、VB-CABLE、Voicemeeter 或 OBS audio。
 5. 如需发布飞书文档，需要安装并登录 `lark-cli`。
 
+一键安装失败时，按 [MANUAL_INSTALL.md](MANUAL_INSTALL.md) 逐项手动安装。
+
 注意：当前自动录屏/录音脚本主要面向 Windows。Mac 可以用于已有视频、音频、文本和评论文件分析，但直播间链接自动录屏能力需要另行配置 Mac 录屏和系统声音采集方案。
 
 安装验证里如果看到 `editdistance` 跳过，不代表安装失败。`editdistance` 只用于 WER/CER 文本评测指标，不影响 FunASR 转写、直播分析或报告生成。系统声音采集显示“manual setup needed”也是预期状态，因为它依赖用户本机的音频设备或虚拟声卡配置。
