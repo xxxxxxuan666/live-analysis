@@ -1,6 +1,6 @@
 ---
 name: livestream-competitor-monitor-skill
-version: "0.1.3"
+version: "0.1.4"
 description: Use when Codex needs to monitor authorized competitor livestreams, especially Douyin live rooms, from live room URLs, real-time speech-to-text, screen recordings, screenshots, transcripts, comment exports, or notes; analyze anchor scripts, comment signals, visuals, offers, objections, pacing, conversion tactics, competitor script libraries, multi-room comparisons, and recurring learnings.
 ---
 
@@ -65,6 +65,7 @@ The preferred Douyin workflow is:
    - Separate anchor speech, comment-section signal, screen/visual content, product offer, interaction mechanics, and conversion action.
    - Preserve exact short phrases only when they are analytically important; otherwise summarize.
    - For screenshots/video frames, describe visible product, UI, props, streamer behavior, offer text, and audience interaction state.
+   - For the report's primary livestream screenshot, first crop away anything unrelated to the live room. The screenshot used in the basic-info section or passed as `-MainScreenshot` must show only the Douyin/live-room relevant area: live video/game screen, live-room title/account area, comment area, live overlays, gifts, product/download/offer entrances, and other in-room evidence. Remove unrelated desktop, other apps, chat tools, browser side clutter outside the live room, taskbars, and blank margins. If automatic cropping is uncertain, manually choose or crop the best frame before publishing instead of using a full-desktop frame.
    - For UI evidence images, only create a `ui-evidence-manifest.json` when the user explicitly asks for UI screenshots. Use manual UI evidence selection first; treat `scripts/export-ui-evidence.ps1 -SourceImage <live-crop-or-screenshot>` as fixed-crop fallback only when the Douyin browser layout clearly matches the standard layout.
    - For the live room overlay/UI section, keep the table to two columns only: module and observation. Do not add a key screenshot/evidence column, and do not include the UI screenshot section by default because automatic UI crops can be inaccurate.
 
@@ -97,7 +98,7 @@ The preferred Douyin workflow is:
    - If the user provides only text or transcript material, use `assets/single-transcript-analysis-template.md`.
    - If the user asks to compare multiple live rooms, use `assets/multi-room-comparison-template.md`.
    - If the user asks to generate, publish, send, or convert the report to a Feishu/Lark document, call `lark-cli` to create the document from the Markdown report. Do not create a Feishu document unless the user asks for it.
-   - Prefer `scripts/publish-feishu-report.ps1 -ReportPath <report.md> -Title "<game-product-name>-<live-room-name>-<date>"` for Feishu publishing. Pass `-MainScreenshot` when available so the helper restores the title and inserts the basic-info screenshot. Pass `-UiEvidenceManifest <ui-evidence-manifest.json>` only when the user explicitly asks for UI screenshots.
+   - Prefer `scripts/publish-feishu-report.ps1 -ReportPath <report.md> -Title "<game-product-name>-<live-room-name>-<date>"` for Feishu publishing. Pass `-MainScreenshot` when available so the helper restores the title and inserts the basic-info screenshot. The `-MainScreenshot` image must be the cropped live-room-only screenshot described in step 5, not an uncropped desktop/full-browser frame. Pass `-UiEvidenceManifest <ui-evidence-manifest.json>` only when the user explicitly asks for UI screenshots.
    - On Windows, if the `lark-cli` PowerShell shim is blocked by execution policy, invoke it through `powershell -NoProfile -ExecutionPolicy Bypass -File (Get-Command lark-cli).Source ...`.
    - Name Feishu report documents as `<游戏产品名>-<直播间名称>-<日期>`, for example `率土之滨-吾乃曹阿瞒【率土老炮】-2026-05-19`.
    - Use `lark-cli docs +create --api-version v2 --title "<游戏产品名>-<直播间名称>-<日期>" --doc-format markdown --content @<report.md>` when creating a report document. If the report has a local livestream screenshot, insert it with `lark-cli docs +media-insert --doc <doc_url_or_id> --file <screenshot.jpg> --type image --caption "直播截图（录制开始时）" --selection-with-ellipsis "直播间基本信息...录制时长" --width 800`.

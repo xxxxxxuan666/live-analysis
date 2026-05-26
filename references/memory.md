@@ -10,6 +10,7 @@ Store durable, non-sensitive learnings from competitor livestream analysis. Do n
 | 2026-05-19 | Douyin | 吾乃曹阿瞒【率土老炮】 | 率土之滨 | New-server conversion live room: combines host-assisted card draws, long-lived download/benefit overlays, payment/resource calculation, and comment-driven result judgment around whether pulls are good, bad, or protected by pity. | C:\Users\xuanliu\Desktop\直播录文件存档\抖音直播间-368782122848\抖音直播间-368782122848-20260519-130853-单场分析.md |
 | 2026-05-22 | Douyin | 跃动小子青龙 | 跃动小子 | Choice-driven light-game live room: turns each backpack/equipment drop into a viewer-facing decision, accepts comment strategy input, amplifies simple-but-hard challenge tension, then loops back to official download CTA. | C:\Users\xuanliu\Desktop\直播录文件存档\跃动小子青龙-20260522\跃动小子-跃动小子青龙-2026-05-22.md |
 | 2026-05-22 | Douyin | 跃动小子-雪瑶 | 跃动小子 | Low-pressure preference-led monetization talk: explains reward value, frames spending as personal taste, and uses "I like it so I bought it / I do not like it so I did not buy it" to reduce hard-sell pressure. | C:\Users\xuanliu\Desktop\直播录文件存档\跃动小子-跃动小子-雪瑶-20260522\跃动小子-跃动小子-雪瑶-2026-05-22.md |
+| 2026-05-25 | Douyin | 小蕊姐姐-三国大冒险 | 三国大冒险 | New-player account-planning live room: uses roster/cultivation expertise, "do not waste cards or the account becomes empty power" risk framing, and comment-driven ID/budget follow-up to convert viewers into download/resource/paid setup leads. | C:\Users\xuanliu\Desktop\直播录文件存档\小蕊姐姐-小蕊姐姐-三国大冒险-20260525\小蕊姐姐-三国大冒险-2026-05-25-单场分析.md |
 
 ## Reusable Script Patterns
 
@@ -22,6 +23,7 @@ Store durable, non-sensitive learnings from competitor livestream analysis. Do n
 - Card-draw conversion loop: name a desired hero or skill before the pull, dramatize the result, judge whether it is worth the spend, respond to comment skepticism, then point back to download or host-assisted draw entry.
 - Choice-question gameplay loop: present an immediate choice, explain the risk/reward, accept comment suggestions, dramatize the result, then reset with a new choice and a short official-download CTA.
 - Preference-led spending loop: explain the reward value, state a personal preference, mention a non-purchase for contrast, then invite viewers to choose based on their own taste.
+- Account-planning risk loop: answer a concrete roster question, warn about irreversible resource mistakes, offer a corrected upgrade path, then ask viewers to download/follow/send ID for personalized setup.
 
 ## Recurring Audience Objections
 
@@ -35,6 +37,7 @@ Store durable, non-sensitive learnings from competitor livestream analysis. Do n
 - Card-draw and new-server objections: "Was this a bad pull?", "Did it eat pity?", "Is this spend worth it?", "Which hero should I target for a new-server start?"
 - Light-game strategy objections: "Is this item a trap?", "Will this build get stuck later?", "Which item or build path should I keep?"
 - Appearance/skin monetization objections: "Is it worth buying if I only care about looks?", "Should I buy this character or skip it?", "Is this a taste choice rather than a must-buy?"
+- Account-cultivation objections: "Which heroes should I raise first?", "Will eating low-rarity cards ruin my account?", "Why is my legacy/upgrade system stuck?", "How much budget does this account need?"
 
 ## Visual Tactics Library
 
@@ -47,6 +50,7 @@ Store durable, non-sensitive learnings from competitor livestream analysis. Do n
 - Strategy/account-review live room: main visual can be dense in-game account/team UI, with the streamer as a secondary trust cue and comments as the content driver.
 - Card-draw new-server live room: keep streamer face, game draw/payment screen, persistent download-benefit overlay, and visible comment judgment on screen at the same time to turn each draw into a public conversion event.
 - Light-game choice live room: a centered vertical game feed with large item/state changes can carry the stream without streamer face, but download guidance needs a stronger visual CTA than audio-only reminders.
+- Account-planning card RPG live room: dense roster screens can support expertise, but download/resource/ID instructions need persistent visual labels because oral CTAs compete with complex build explanations.
 
 ## Analysis Heuristics
 
